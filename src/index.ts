@@ -2,6 +2,13 @@ import type { OpenChatEmbedClient } from "./client";
 import type { InboundXFrameMessage, OutboundXFrameMessage } from "./messages";
 import type { Theme } from "./theme";
 
+const openChatOrigins = [
+    "http://localhost:5001",
+    "https://test.oc.app",
+    "https://webtest.oc.app",
+    "https://oc.app",
+];
+
 function debug(msg: string, ...params: unknown[]): void {
     console.debug(`OPENCHAT_EXTERNAL_TARGET: ${msg}`, params);
 }
@@ -36,8 +43,8 @@ function broadcastMessage(msg: OutboundXFrameMessage) {
 
 function messageFromOpenChat(resolve: (client: OpenChatEmbedClient) => void) {
     return (ev: MessageEvent) => {
-        debug("message received from host", ev);
-        if (ev.data) {
+        debug("message received from host", ev.origin);
+        if (openChatOrigins.includes(ev.origin) && ev.data) {
             try {
                 const payload = ev.data as InboundXFrameMessage;
                 switch (payload.kind) {
