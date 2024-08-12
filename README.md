@@ -26,7 +26,7 @@ The library simply provides an `initialise` function. This `initialise` function
 
 The library will take care of writing all of the css variables used by OpenChat into the target document. This enabled the author of the embedded content to simply make use of the same css variables within their own UI ensuring that it will match the selected theme of the host OpenChat instance.
 
-The `initialise` function is an async function and you should `await` the promise it returns to determine when the link between the client and the host is established.
+The `initialise` function is an async function and you should `await` the promise it returns to determine when the link between the client and the host is established. The promise will resolve with the username of the OpenChat user.
 
 ## Example Usage
 
@@ -35,15 +35,15 @@ The `initialise` function is an async function and you should `await` the promis
   import { initialise } from "$lib/openchat-embed";
   import { onMount } from "svelte";
 
-  let ready: boolean;
+  let openChatUser: string | undefined = undefined;
 
   onMount(async () => {
     // call the library's initialise function and wait for it to complete
-    ready = await initialise();
+    openChatUser = await initialise();
   });
 </script>
 
-{#if ready}
+{#if openChatUser !== undefined}
   <div class="content">
     <h1>This is an external page</h1>
     <p>
@@ -53,7 +53,7 @@ The `initialise` function is an async function and you should `await` the promis
 
     <p class="smallprint">All you have to do is use the variables.</p>
 
-    <button on:click={() => alert("click")}> Click Me! </button>
+    <button on:click={() => alert("click")}> Welcome {openChatUser}! </button>
   </div>
 {/if}
 

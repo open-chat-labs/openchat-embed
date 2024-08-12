@@ -16,7 +16,7 @@ export function writeCssVars(prefix: string, section: Theme): void {
     }
 }
 
-export function initialise(): Promise<boolean> {
+export function initialise(): Promise<string> {
     return new Promise((resolve) => {
         if (window.self !== window.top) {
             debug("setting listeners", window.top);
@@ -33,7 +33,7 @@ function broadcastMessage(msg: OutboundXFrameMessage) {
     }
 }
 
-function messageFromOpenChat(resolve: (ready: boolean) => void) {
+function messageFromOpenChat(resolve: (username: string) => void) {
     return (ev: MessageEvent) => {
         debug("message received from host", ev);
         if (ev.data) {
@@ -43,7 +43,7 @@ function messageFromOpenChat(resolve: (ready: boolean) => void) {
                     case "initialise_external_content":
                         debug("initialising theme", payload.theme);
                         writeCssVars("--", payload.theme);
-                        resolve(true);
+                        resolve(payload.username);
                         break;
                     case "set_theme":
                         debug("set_theme", payload.theme);
