@@ -2,6 +2,8 @@ import type { OpenChatEmbedClient } from "./client";
 import type { InboundXFrameMessage, OutboundXFrameMessage } from "./messages";
 import type { Theme } from "./theme";
 
+export type { OpenChatEmbedClient, Theme };
+
 const openChatOrigins = [
     "http://localhost:5001",
     "https://test.oc.app",
@@ -53,6 +55,7 @@ function messageFromOpenChat(resolve: (client: OpenChatEmbedClient) => void) {
                         writeCssVars("--", payload.theme);
                         resolve({
                             username: payload.username,
+                            theme: payload.theme,
                         });
                         break;
                     case "set_theme":
