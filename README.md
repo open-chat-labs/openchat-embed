@@ -26,24 +26,24 @@ The library simply provides an `initialise` function. This `initialise` function
 
 The library will take care of writing all of the css variables used by OpenChat into the target document. This enabled the author of the embedded content to simply make use of the same css variables within their own UI ensuring that it will match the selected theme of the host OpenChat instance.
 
-The `initialise` function is an async function and you should `await` the promise it returns to determine when the link between the client and the host is established. The promise will resolve with the username of the OpenChat user.
+The `initialise` function is an async function and you should `await` the promise it returns to determine when the link between the client and the host is established. The promise will resolve with an instance of an OpenChatEmbedClient. At the moment this client will only give you access to the OpenChat username, but it future iterations it may also give you the ability to interact with the OpenChat host to perform various functions.
 
 ## Example Usage
 
 ```
 <script lang="ts">
-  import { initialise } from "$lib/openchat-embed";
+  import { initialise, type OpenChatEmbedClient } from "$lib/openchat-embed";
   import { onMount } from "svelte";
 
-  let openChatUser: string | undefined = undefined;
+  let client: OpenChatEmbedClient | undefined = undefined;
 
   onMount(async () => {
     // call the library's initialise function and wait for it to complete
-    openChatUser = await initialise();
+    client = await initialise();
   });
 </script>
 
-{#if openChatUser !== undefined}
+{#if client !== undefined}
   <div class="content">
     <h1>This is an external page</h1>
     <p>
@@ -53,7 +53,7 @@ The `initialise` function is an async function and you should `await` the promis
 
     <p class="smallprint">All you have to do is use the variables.</p>
 
-    <button on:click={() => alert("click")}> Welcome {openChatUser}! </button>
+    <button on:click={() => alert("click")}> Welcome {client.username}! </button>
   </div>
 {/if}
 

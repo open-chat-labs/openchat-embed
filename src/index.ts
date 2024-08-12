@@ -1,3 +1,4 @@
+import type { OpenChatEmbedClient } from "./client";
 import type { InboundXFrameMessage, OutboundXFrameMessage } from "./messages";
 import type { Theme } from "./theme";
 
@@ -16,7 +17,7 @@ export function writeCssVars(prefix: string, section: Theme): void {
     }
 }
 
-export function initialise(): Promise<string> {
+export function initialise(): Promise<OpenChatEmbedClient> {
     return new Promise((resolve) => {
         if (window.self !== window.top) {
             debug("setting listeners", window.top);
@@ -33,7 +34,7 @@ function broadcastMessage(msg: OutboundXFrameMessage) {
     }
 }
 
-function messageFromOpenChat(resolve: (username: string) => void) {
+function messageFromOpenChat(resolve: (client: OpenChatEmbedClient) => void) {
     return (ev: MessageEvent) => {
         debug("message received from host", ev);
         if (ev.data) {
@@ -43,7 +44,9 @@ function messageFromOpenChat(resolve: (username: string) => void) {
                     case "initialise_external_content":
                         debug("initialising theme", payload.theme);
                         writeCssVars("--", payload.theme);
-                        resolve(payload.username);
+                        resolve({
+                            username: payload.username,
+                        });
                         break;
                     case "set_theme":
                         debug("set_theme", payload.theme);
